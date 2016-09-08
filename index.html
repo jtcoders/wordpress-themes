@@ -1,0 +1,1668 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Building Themes WordPress</title>
+
+    <meta name="description" content="">
+    <meta name="author" content="JobTrain Coders">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/simple.css" id="theme">
+        <link rel="stylesheet" href="css/custom.css">
+        <link rel="stylesheet" href="lib/css/dark.css">
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h2>Building Themes for WordPress</h2>
+					<p>https://jtcoders.gitub.io/wordpress-themes</p>					
+				</section>
+        <section>
+					<h2>What are Themes?</h2>
+					<h3>Description from the Codex</h3>
+					<blockquote>
+						WordPress Themes are files that work together to create the design and functionality of a WordPress site.
+					</blockquote>
+
+					<p class="info-link">
+						<a href="https://codex.wordpress.org/Theme_Development" target="_blank"><i class="fa fa-info-circle"></i></a>
+					</p>
+				</section>
+				
+				<section>
+					<h2>Let's take a closer look at a theme</h2>
+				</section>
+				
+				<section>
+					<h2>The Files</h2>
+					<h3>WordPress file and folder structure</h3>
+					
+					<p>
+						<img src="images/wpfolders.png" />
+					</p>
+
+					<ul>
+						<li><strong>wp-admin -</strong> WordPress core files, <span class="red">don't touch these!</span></li>
+						<li><strong>wp-content -</strong> Theme, plugin and uploaded files</li>
+						<li><strong>wp-includes -</strong> WordPress core files, <span class="red">don't touch these either!</span></li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>The Files</h2>
+					<h3>Where theme files live</h3>
+					<img src="images/folders.jpg" class="right" />
+					<ul>
+						<li>wp-content</li>
+						<ul>
+							<li>plugins</li>
+							<li>themes
+								<ul>
+									<li><span class="green">twentyfifteen</span></li>
+									<li><span class="green">twentyfourteen</span></li>
+									<li><span class="green">twentythirteen</span></li>
+								</ul>
+							</li>
+						</ul>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>The Files</h2>
+					<h3>The theme files</h3>
+
+					<p>
+						<img src="images/2013files.png" />						
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Modifying Themes</h2>
+					<h3>Now that I know where theme files live I can just edit them, right?</h3>
+					<p>
+						<strong>NO!</strong>
+					</p>
+				</section>	
+				
+				<section>
+					<h2>#1 Rule of WordPress Development</h2>
+					<h3>Never EVER edit WordPress core code.</h3>
+
+					<p>
+						This means do not edit:
+					</p>
+					
+					<ul>
+						<li>WordPress core files</li>
+						<li>Plugin files</li>
+						<li>Theme files</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>Why?</h2>
+					
+					<ul>
+						<li>Stuff gets broken</li>
+						<li>Other plugins and themes may not work with your changes</li>
+						<li>Updates wipe out your changes</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>So how do you customize a WordPress theme?</h2>
+					<h3>You create a theme that is a "child" of another theme</h3>
+					
+					<ul>
+						<li>Your child theme overrides the design elements you want changed and otherwise falls back to the parent.</li>
+						<li>Your child theme can also override or add functionality to the parent theme.</li>
+					</ul>
+
+					<p class="info-link">
+						<a href="https://codex.wordpress.org/Child_Themes" target="_blank"><i class="fa fa-info-circle"></i></a>
+					</p>
+				</section>	
+				
+				<section>
+					<h2>How it Works</h2>
+					
+					<p><img src="images/folders.png" /></p>
+					
+					<h4>Your child theme's folder is a safe place where you can add css and php files without changing the parent theme.</h4>
+					
+					<p>
+						If you break something you can just hit undo or remove your file. All parent theme files will remain intact.
+					<p>
+				</section>		
+				
+				<section>
+					<h2>Making a Child Theme</h2>
+						
+					<h3>We'll make a child theme of Twenty Thirteen</h3>
+				</section>	
+				
+				<section>
+					<h2>What Your Child Theme Needs</h2>
+						
+					<h3>In order for your child theme to work it needs 3 things</h3>
+					<h4>Really, it only needs 2 things, but 3 is better</h4>
+				</section>	
+				
+				<section>
+					<h2>What Your Child Theme Needs</h2>
+						
+					<h3>Thing #1 - a style.css file</h3>
+					
+					<p>Define the general information for your theme.</p>
+					
+<pre>
+<code>/*
+Theme Name: [Your Theme Name]
+Theme URI: [URL for your theme if you have one]
+Description: A description for your theme.
+Author: [You]
+Author URI: [Your URL]
+Template: twentythirteen
+Version: 1
+*/</code></pre>
+					
+				</section>	
+				
+				<section>
+					<h2>What Your Child Theme Needs</h2>
+						
+					<h3>Thing #1 - a style.css file</h3>
+					
+					<p>Define the general information for your theme.</p>
+					
+					<img src="images/stylecss.png" alt="">
+					
+				</section>	
+				
+				<section>
+					<h2>What Your Child Theme Needs</h2>
+						
+					<h3>Thing #2 - a functions.php file</h3>
+					
+					<p>Enqueue the parent and child theme stylesheets</p>
+					
+<pre>
+<code>&lt;?php
+
+add_action( 'wp_enqueue_scripts', 'theme_enqueue_styles' );
+function theme_enqueue_styles() {
+    wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+    wp_enqueue_style( 'child-style',
+        get_stylesheet_directory_uri() . '/style.css',
+        array('parent-style')
+    );
+}</code></pre>						
+				</section>			
+				
+				<section>
+					<h2>What Your Child Theme Needs</h2>
+						
+					<h3>Thing #3 - a screenshot</h3>
+					
+					<p>This is the thumbnail image that represents each theme in <strong>Appearance > Themes</strong> in the WordPress admin.</p>
+					
+					<p><img src="images/screenshotpic.png" /></p>
+				</section>	
+				
+				
+				<section>
+					<h2>What Your Child Theme Needs</h2>
+						
+					<h3>Thing #3 - a screenshot</h3>
+					
+					<p>Create a 880px by 660px image file, name it “screenshot.png” and place it into the child theme’s folder.</p>
+				</section>	
+				
+				
+				<section>
+					<h2>Add your child theme</h2>
+						
+					<ol>
+					<img src="images/mytheme.png" class="right" />
+						<li>Create a folder for your theme in <code>wp-content/themes</code> (no spaces)</li>
+						<li>Add your 3 theme files (style.css, functions.php and screenshot.png) to your theme folder</li>
+					</ol>	
+				</section>	
+				
+				
+				<section>
+					<h2>Activate your theme</h2>
+					
+					<p>
+						Go to Appearance > Themes in the WP admin.<br />
+						Your child theme is now there!
+						<img src="images/awesome.png" />
+					</p>					
+				</section>	
+				
+				<section>
+					<h2>Where We're At Now</h2>
+					
+					<p><img src="images/folders2.png" /></p>
+					
+					<p>
+						The 3 files illustrate how a child theme's files affect the parent's files -- they either override and add functionality to its identically named file, or completely replaces it.
+					<p>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Make a child theme</h3>
+
+					<ul>
+						<li>Create a child theme of Twenty Thirteen</li>
+						<li>Make sure you create a screenshot</li>
+						<li>Activate your theme</li>
+					</ul>
+
+					<p>
+						<br /><small><a href="https://github.com/TheTracyL/twentythirteen-child" target="_blank">If you get stuck</a></small>
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Modifying the Parent Theme</h2>
+					<h3>Making CSS Changes</h3>
+					
+					<p>
+						Your style.css file will override styles in the parent theme's style.css file with the same selectors.
+					<p>
+					
+					<p>
+						<img src="images/inspect-title.png" />
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Modifying the Parent Theme</h2>
+					<h3>Making CSS Changes</h3>
+					
+					<p>
+						Example: Changing the size of the header title. The font-size for <code>.site-title</code> is 60px. Use the css selector in your child theme to change it. 
+					<p>
+
+<pre>
+<code>
+.site-title {
+    font-size: 40px;
+}
+
+</code></pre>
+				</section>	
+				
+				<section>
+					<h2>Modifying the Parent Theme</h2>
+					<h3>Making Template Changes</h3>
+					
+					<p>
+						First, an introduction to templates...
+					<p>
+				</section>	
+				
+				<section>
+					<h2>Templates</h2>
+					<h3>From the Codex</h3>
+					<blockquote>
+						Template files are the building blocks of your WordPress site. They fit together like the pieces of a puzzle to generate the web pages on your site.
+					</blockquote>
+
+					<p class="info-link">
+						<a href="https://codex.wordpress.org/Stepping_Into_Templates" target="_blank"><i class="fa fa-info-circle"></i></a>
+					</p>
+				</section>
+				
+				<section>
+					<h2>Templates</h2>
+					<ul>
+						<li>Assemble HTML, PHP and content from the database to display pages in a web browser</li>
+						<li>Determines how a webpage or part of a webpage looks</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Twenty Thirteen Template Files</h2>
+					
+					<p>
+						In the twentythirteen folder is all the theme's the template files. You can create your own versions of these files in your child theme.
+					<p>
+					
+					<p><img src="images/2013files.png" /></p>
+				</section>		
+				
+				<section>
+					<h2>Some common template files</h2>
+
+					<ul>
+						<li><strong>header.php</strong> - The global header for your site</li>
+						<li><strong>footer.php</strong> - The global footer for your site</li>
+						<li><strong>index.php</strong> - The posts (blog) page</li>
+						<li><strong>page.php</strong> - Static pages</li>
+						<li><strong>sidebar.php</strong> - Your sidebar widget areas</li>
+						<li><strong>single.php</strong> - A single post</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>Modifying the Parent Theme</h2>
+					<h3>Making template changes</h3>
+					
+					<p>
+						Example: Removing WordPress credit from <code>footer.php</code>
+					<p>
+					
+					<ol>
+						<li>Open <code>footer.php</code> in the twentythirteen folder and save a copy into your theme's folder.</li> 
+						<li>Alter the contents of .site-info and save the file.</li>
+					</ol>
+	
+<pre>
+<code>				
+&lt;div class="site-info"&gt;
+	&lt;?php do_action( 'twentythirteen_credits' ); ?&gt;
+	&lt;a href="&lt;?php echo esc_url( __( 'http://wordpress.org/', 'twentythirteen' ) ); ?&gt;" title="&lt;?php esc_attr_e( 'Semantic Personal Publishing Platform', 'twentythirteen' ); ?&gt;"&gt;&lt;?php printf( __( 'Proudly powered by %s', 'twentythirteen' ), 'WordPress' ); ?&gt;&lt;/a&gt;
+&lt;/div?&gt;&lt;!-- .site-info --&gt;
+</code></pre>
+				</section>	
+				
+				<section>
+					<h2>Modifying the Parent Theme</h2>
+					<h3>Making your own templates</h3>
+					
+					<p>
+						Twentythirteen has just one default template, a content area with a right sidebar.<br /> <br /> 
+					</p>
+					
+					<img src="images/templates.png" class="right" />
+					<p>
+						You can make additional templates. Templates you create will appear in the Template drop-down menu on the Page edit screen. 
+					<p>
+				</section>		
+				
+				<section>
+					<h2>What a template file needs</h2>
+						
+					<h4>First, a name (this goes at the top of your file)</h4>
+<pre>
+<code>
+&lt;?php
+/*
+Template Name: [Type your template name here]
+*/
+?&gt;
+
+</code></pre>
+
+					<h4>Second, at least these 2 include tags</h4>
+<pre>
+<code>
+&lt;?php get_header(); ?&gt;
+
+&lt;?php get_footer(); ?&gt;
+
+</code></pre>
+					
+				</section>	
+				
+				<section>
+					<h2>Modifying the Parent Theme</h2>
+					<h3>Making your own templates</h3>
+					
+					<p>
+						Example: Create a full-width, no sidebar template.
+					</p>
+
+					<ol>
+						<li>Open <code>page.php</code> in the twentythirteen folder.</li>
+						<li>Rename it <code>page-fullwidth.php</code> and save it into your theme's folder</li>
+						<li>Add the <code>Template Name:</code> to top of the file</li>
+						<li>Remove <code>&lt;?php get_sidebar(); ?&gt;</code></li>
+						<li>Adjust the css to make <code>.entry-content</code> full width.</li>
+					</ol>
+
+				</section>	
+				
+				<section>
+					<h2>Tip: body classes</h2>
+
+					<p>
+						WordPress dynamically adds <a href="http://codex.wordpress.org/Function_Reference/body_class" target="_blank">classes to the body tag</a> depending what page you are on or template you are using. Use them to create unique styles for pages.
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Practice modifying the parent theme</h3>
+
+					<ul>
+						<li>Make CSS changes to the parent theme with your child theme</li>
+						<li>Make your own version of templates that override the parent theme</li>
+						<li>Add a new template to your theme</li>
+					</ul>
+				</section>	
+				
+
+				
+				<section>
+					<h2>Template tags</h2>
+						
+					<h4>Template tags let you insert dynamic content into your templates.</h4>
+				</section>	
+				
+				<section>
+					<h2>Include tags</h2>
+						
+					<h4>Used in a template to execute the HTML and PHP found in another template</h4>
+<pre>
+<code>
+&lt;?php get_search_form(); ?&gt;
+&lt;?php get_sidebar(); ?&gt;
+&lt;?php comments_template(); ?&gt;
+
+</code></pre>
+
+<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Include_Tags" target="_blank">Include Tags Page</a></p>
+					
+				</section>					
+				
+				<section>
+					<h2>Include tags</h2>
+					<h3>Using Include tags</h3>
+					
+					<p>
+						Example: Add the search form to the header
+					</p>
+
+					<ol>
+						<li>Open <code>header.php</code> in the twentythirteen folder and save a copy into your theme's folder.</li>
+						<li>Add <code>&lt;?php get_search_form(); ?&gt;</code> to the header just below the site description</li>
+					</ol>
+
+				</section>	
+				
+				<section>
+					<h2>Function tags</h2>
+						
+					<h4>Used to display useful WordPress PHP functions</h4>
+<pre>
+<code>
+&lt;?php the_title(); ?&gt;
+&lt;?php the_content(); ?&gt;
+&lt;?php the_permalink(); ?&gt;
+&lt;?php the_excerpt(); ?&gt;
+&lt;?php get_the_post_thumbnail(); ?&gt;
+
+</code></pre>
+
+<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference" target="_blank">Function Reference</a></p>
+					
+				</section>					
+				
+				<section>
+					<h2>Function tags</h2>
+					<h3>Using Function tags</h3>
+					
+					<p>
+						Example: Add a copyright to the footer
+					</p>
+
+					<ol>
+						<li>Open <code>footer.php</code> in your theme's folder.</li>
+						<li>Add code to create a copyright line</li>
+					</ol>
+					
+<pre>
+<code>
+Copyright &copy; &lt;?php echo date('Y'); ?&gt; &lt;a href="&lt;?php echo home_url( '/' ); ?&gt;"&gt;&lt;?php bloginfo( 'name' ); ?&gt;&lt;/a&gt;
+
+</code></pre>
+				</section>	
+				
+				<section>
+					<h2>Conditional tags</h2>
+						
+					<h4>Used to grab and display content depending on what page it is and the conditions it matches.</h4>
+<pre>
+<code>
+is_front_page()
+is_home()
+is_single() 
+is_page()
+is_category()
+
+</code></pre>
+
+<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">Conditional Tags Page</a> and this blog post on <a href="http://www.chipbennett.net/2013/09/14/home-page-and-front-page-and-templates-oh-my/" target="_blank"><code>is_front_page()</code> vs. <code>is_home()</code></a></p>
+					
+				</section>					
+				
+				<section>
+					<h2>Function tags</h2>
+					<h3>Using Conditional tags</h3>
+					
+					<p>
+						Example: Add credit to the footer that only shows on the home page
+					</p>
+
+					<ol>
+						<li>Open <code>footer.php</code></li>
+						<li>Add code to create a credit line</li>
+					</ol>
+					
+<pre>
+<code>
+&lt;?php
+	if(is_front_page()){
+		echo "&lt;p&gt;Web design by [your name here]&lt;/p&gt;";
+	}
+?&gt;
+</code></pre>
+				</section>				
+				
+				<section>
+					<h2>Function tags</h2>
+					<h3>Using Conditional tags</h3>
+					
+					<p>
+						Example: Add a div to the header that only shows on the home page
+					</p>
+
+					<p>
+						<code>header.php</code>
+					</p>
+					
+<pre>
+<code>
+&lt;?php if (is_front_page() ) {?&gt;
+	&lt;div class='header-homediv'&gt;
+		&lt;h1&gt;THIS IS THE HOME PAGE&lt;/h1&gt;
+	&lt;/div&gt;
+&lt;?php } ?&gt;
+
+</code></pre>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Practice using template tags</h3>
+
+					<ul>
+						<li>Use an include tag. Suggestion: Add the search form to a template</li>
+						<li>Use a function tag. Suggestion: Use the function <code><a href="http://codex.wordpress.org/Template_Tags/bloginfo" target="_blank">bloginfo</a></code> to add the blog description to the footer.</li>
+						<li>Use a conditional tag. Suggestion: A show some text in the header only on the home page</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>Handy Template Tags</h2>
+					
+					<h3>get_template_part</h3>
+					<p>
+						get_template_part is a special include tag that allows you to load any other template file into a template. It lets you to reuse code in multiple templates. <br /><br />
+						
+						Important Dev rule #2 <strong>Don't Repeat Yourself</strong>. 
+					</p>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/get_template_part" target="_blank">get template part</a></p>
+				</section>		
+				
+				<section>
+					<h2>Handy Template Tags</h2>
+					
+					<h3>get_template_part</h3>
+
+<pre><code>
+&lt;?php get_template_part( 'content', 'none' ); ?&gt;
+
+</code></pre>
+				<p>
+					Will load a template file named content-none.php
+				</p>
+				</section>	
+				
+				<section>
+					<h2>Handy Template Tags</h2>
+					
+					<h3>the_post_thumbnail</h3>
+					
+<pre><code>
+&lt;?php the_post_thumbnail('medium'); ?&gt;
+
+</code></pre>					
+					<p>
+						This will create an <code>img</code> tag for the medium sized version of a post or page's "Featured Image"
+					</p>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/the_post_thumbnail" target="_blank">the post thumbnail</a></p>
+				</section>	
+				
+				
+				<section>
+					<h2>Handy Template Tags</h2>
+					
+					<h3>the_post_thumbnail</h3>
+					<p>
+						You can bring up the thumbnail, medium, large, original or a custom size of the featured image. If no size is defined it will default to the thumbnail size.
+					</p>
+					
+<pre>
+<code>
+&lt;?php the_post_thumbnail('thumbnail'); ?&gt;
+&lt;?php the_post_thumbnail('medium'); ?&gt;
+&lt;?php the_post_thumbnail('large'); ?&gt;
+&lt;?php the_post_thumbnail('full'); ?&gt;
+&lt;?php the_post_thumbnail( array(250,100) );  ?&gt;
+
+</code></pre>			
+				</section>	
+				
+				
+				<section>
+					<h2>Handy Template Tags</h2>
+					
+					<h3>get_template_directory_uri and get_stylesheet_directory_uri</h3>
+					
+					<ul>
+						<li><code>get_template_directory_uri</code> -  Retrieves stylesheet directory address for the current theme.</li>
+						<li><code>get_stylesheet_directory_uri</code> - Retrieves stylesheet directory address for the current theme/child theme.</li>
+					</ul>
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/get_template_directory_uri" target="_blank">get template directory uri</a> and <a href="http://codex.wordpress.org/Function_Reference/get_stylesheet_directory_uri" target="_blank">get stylesheet directory uri</a>
+					</p>
+				</section>				
+				
+				<section>
+					<h2>Handy Template Tags</h2>
+					
+					<h3>get_template_directory_uri and get_stylesheet_directory_uri</h3>
+					
+					<p>
+						To include images in your theme you can use the code below.
+					</p>
+					
+<pre><code>&lt;img src="&lt;?php echo get_stylesheet_directory_uri(); ?&gt;/images/image.png" /&gt;</code></pre>	
+VS. 
+<pre><code>&lt;img src="http://whatever.com/wp-content/mytheme/images/image.png" /&gt;</code></pre>			
+				</section>	
+				
+				<section>
+					<h3>The WordPress Template Hierarchy</h3>
+					<h4>codex.wordpress.org says:</h4>
+					<blockquote>
+						WordPress uses the Query String &mdash; information contained within each link on your web site &mdash; to decide which template or set of templates will be used to display the page.
+					</blockquote>
+
+					<p class="info-link">
+						<a href="http://codex.wordpress.org/Template_Hierarchy#The_General_Idea" target="_blank"><i class="fa fa-info-circle"></i></a>
+					</p>
+				</section>
+
+				<section>
+					<h3>The WordPress Template Hierarchy</h3>
+					<h4>What it is</h4>
+					<p>
+						If you name a template file a certain way, it will automatically apply to a certain page.
+					</p>
+					
+					<p>
+						There's a <a href="http://codex.wordpress.org/Template_Hierarchy#Visual_Overview" target="_blank">chart on WordPress.org</a> that shows how the naming conventions work.
+					</p>
+				</section>
+				
+				<section>					
+					<a href="images/wp-template-hierarchy.jpg" target="_blank">
+						<img src="images/wp-template-hierarchy.jpg" />
+					</a>
+				</section>
+				
+				<section>					
+					<a href="images/wp-template-hierarchy-old.jpg" target="_blank">
+						<img src="images/wp-template-hierarchy-old.jpg" />
+					</a>
+				</section>
+
+				<section>
+					<h3>The WordPress Template Hierarchy</h3>
+					<p>
+						The chart looks confusing, but if you break it down it's really pretty simple. We'll look at the template hierarchy for category archives.
+					</p>
+					
+					<p>
+						<img src="images/cat-archive.png" />
+					</p>
+				</section>
+
+				<section>
+					<h3>The WordPress Template Hierarchy</h3>
+					<h4>How it works</h4>
+					<p>
+						If you name template a file a certain way they will affect the display of a certain page. Just follow the chart to find the correct naming convention.
+					</p>
+					<p>
+						<img src="images/cat-templates.png" />
+					</p>
+				</section>
+
+				<section>
+					<h3>The WordPress Template Hierarchy</h3>
+					<h4>How it works</h4>
+					<p>
+						Custom archive and post templates can be named by id or slug
+						
+						<ul>
+							<li>category-$slug</li>
+							<li>category-$id</li>
+						</ul>
+						<ul>
+							<li>category-kittens</li>
+							<li>category-12</li>
+						</ul>
+					</p>
+					
+					<p><br />Check out this <a href="http://wphierarchy.com/" target="_blank">interactive version of the chart</a></p>
+				</section>			
+				
+				<section>
+					<h2>The WordPress Template Hierarchy</h2>
+					
+					<p>
+						Example: Make an archive term template
+					</p>
+
+					<ol>
+						<li>Open <code>category.php</code> in the twentythirteen folder.</li>
+						<li>Rename it <code>category-[slug].php</code> and save it into your theme's folder</li>
+						<li>Modify the template</li>
+					</ol>
+
+				</section>		
+
+				<section>
+					<h3>The WordPress Template Hierarchy</h3>
+					<h4>How it works</h4>
+					<p>
+						<code>index.php</code> is the end of the road. Any page that does not have another template file made for it will use <code>index.php</code> aka the default template for the posts (blog) page.
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Practice using the WordPress Template Hierarchy</h3>
+
+					<ul>
+						<li>Make a special template for a tag or category you create</li>
+					</ul>
+				</section>	
+
+				<section>
+					<h3>Starter Themes</h3>
+					<p>Child themes are great for modifying existing themes, but you can create your own custom theme with a starter theme.</p>
+					<p>Starter themes have base WordPress functionality, but very little or no style. Starter theme developers <strong>encourage</strong> you to hack it and make it your own.</p>
+				</section>
+
+				<section>
+					<h3>Starter Themes</h3>
+					<p>Starter themes can also come with a base framework, like HTML 5 Boilerplate, Twitter Bootstrap or a responsive grid if you enjoy using frameworks. There's no need to reinvent the wheel!</p>
+				</section>
+				
+				<section>
+					<h3>Popular Starter Themes</h3>
+					<p>
+						<a href="http://underscores.me/" target="_blank"><img src="images/underscores-thumb.png" class="no-border" /></a> <a href="http://themble.com/bones/" target="_blank"><img src="images/bones.png" class="no-border" /></a> <a href="http://roots.io/starter-theme/" target="_blank"><img src="images/roots.png" class="no-border" /></a> <a href="http://html5reset.org/#wordpress" target="_blank"><img src="images/html5reset.png" class="no-border" /></a> <a href="http://320press.com/themes/wp-bootstrap/" target="_blank"><img src="images/wpbootstrap.png" class="no-border" /></a> <a href="http://quarktheme.com/" target="_blank"><img src="images/quark.png" class="no-border" /></a>						
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Install a Starter theme</h3>
+
+					<ul>
+						<li>Download and install a starter theme</li>
+						<li>Make it your own by editing style.css and screenshot.png</li>
+					</ul>
+				</section>	
+				
+				
+				<section>
+					<h2>Resources</h2>
+					<h3>Essential WordPress Codex Articles</h3>
+
+					<ul>
+						<li><strong><a href="http://codex.wordpress.org/" target="_blank">The WordPress Codex</a></strong> - the online manual for WordPress and a living repository for WordPress information and documentation.</li>
+						<li><strong><a href="http://codex.wordpress.org/Theme_Development" target="_blank">Theme Development</a></strong> </li>
+						<li><strong><a href="http://codex.wordpress.org/Stepping_Into_Templates" target="_blank">Stepping Into Templates</a></strong></li>
+					</ul>
+				</section>
+        <section>
+					<h3>A review...</h3>
+					<ul>
+						<li>What is the #1 rule of WordPress development?</li>
+						<li>What is the proper method of modifying an existing WordPress theme?</li>
+						<li>What is a conditional tag?</li>
+						<li>What is the purpose of the WordPress Template Hierarchy?</li>
+						<li>What is the benefit of using a Starter Theme?</li>
+					</ul>
+				</section>		
+				
+
+				<section>
+					<h3>The Loop</h3>
+					<h4><a href="http://codex.wordpress.org/The_Loop" target="_blank">codex.wordpress.org says:</a></h4>
+					<blockquote>
+						The Loop is PHP code used by WordPress to display posts.
+					</blockquote>
+				</section>	
+				
+
+				<section>
+					<h3>The Loop</h3>
+					<h4>Runs on Every Page</h4>
+					<p>
+						The Loop is a set of instructions in a template that grabs content and displays it on a page.
+					</p>
+					
+					<p>
+						It's called a "loop" because the set of instructions can be repeated multiple times on a page. For example, <code>index.php</code>.
+					</p>
+
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/The_Loop" target="_blank">The Loop</a></p>
+				</section>
+				
+				<section>
+					<h3>The Loop</h3>
+					<h4>What it is</h4>
+					<p>
+						Within the main loop are the main parts of a page or post.
+					</p>
+						
+					<p><code>&lt;?php the_title(); ?&gt;</code></p>
+					<p><code>&lt;?php the_content(); ?&gt;</code></p>
+					
+				</section>
+
+				<section>
+					<h3>The Loop</h3>
+					<h4>What it is</h4>
+					<p>
+						You can also grab additional content, aka <strong>Metadata</strong>, attached to pages or posts. Some function tags will only work if they are <a href="http://codex.wordpress.org/Stepping_Into_Template_Tags#Template_Tags_and_The_Loop" target="_blank">placed within The Loop</a>.
+					</p>
+						<ul>
+							<li>Author</li>
+							<li>Date</li>
+							<li>Featured Image</li>
+							<li>Categories (posts only)</li>
+							<li>Tags (posts only)</li>
+							<li>Etc.</li>
+						</ul>
+				</section>
+
+				<section>
+					<h3>The Loop</h3>
+					<h4>Examples</h4>
+					<p>
+						Let's check out The Loop in a few different Twentythirteen templates
+					</p>
+						
+						<ul>
+							<li><code>page.php</code></li>
+							<li><code>index.php</code></li>
+							<li><code>content.php</code></li>
+						</ul>
+				</section>
+					
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Practice modifying the WordPress Loop</h3>
+
+					<ul>
+						<li>Make a copy of a template in your child theme and modify the default loop</li>
+						<li>Suggestion: Remove comments from pages.</li>
+						<li><a href="https://codex.wordpress.org/Template_Tags" target="_blank">List of WordPress Template Tags</a></li>
+					</ul>
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					
+					<p>Use <code>WP_Query</code> to write your own loops</p>
+
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a></p>
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>Basic Structure</h4>
+					
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( $args ); ?&gt;
+
+&lt;ul&gt;
+&lt;!-- // Loop starts --&gt;
+&lt;?php while ($myloop-&gt;have_posts()) : $myloop-&gt;the_post(); ?&gt;
+	&lt;li&gt;
+		&lt;h2&gt;&lt;?php the_title(); ?&gt;&lt;/h2&gt;
+		
+		&lt;p&gt;&lt;?php the_content(); ?&gt;&lt;/p&gt;
+	&lt;/li&gt;
+&lt;!-- // Loop ends --&gt;	
+&lt;?php endwhile;  ?&gt;
+&lt;/ul&gt;
+</code></pre>
+					
+
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP_Query</a></p>
+				</section>			
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>$args</h4>
+Show posts by a certain author: 
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( 'author_name=tracy' ); ?&gt;
+
+</code></pre>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query#Author_Parameters" target="_blank">WP_Query Author Parameters</a></p>
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>$args</h4>
+Show posts in a certain category: 
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( 'cat=4' ); ?&gt;
+
+</code></pre>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query#Category_Parameters" target="_blank">WP_Query Category Parameters</a></p>
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>$args</h4>
+Show posts with a certain tag: 
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( 'tag=cats' ); ?&gt;
+
+</code></pre>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query#Tag_Parameters" target="_blank">WP_Query Tag Parameters</a></p>
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>$args</h4>
+Show x number of posts at a time: 
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( 'posts_per_page=5' ); ?&gt;
+
+</code></pre>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query#Pagination_Parameters" target="_blank">WP_Query Pagination Parameters</a></p>
+					
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>$args</h4>
+Order posts in alphabetical order by title: 
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( 'orderby=title' ); ?&gt;
+
+</code></pre>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters" target="_blank">WP_Query Orderby Parameters</a></p>
+					
+				</section>	
+
+				<section>
+					<h3>WP_Query</h3>
+					<h4>$args</h4>
+Put multiple parameters in an array: 
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( array( 
+	'cat' => 'cats', 
+	'posts_per_page' => '4', 
+	'orderby' => 'date', 
+	'order' => 'DESC' 
+	) ); 
+?&gt;
+
+&lt;ul&gt;
+&lt;!-- // The Loop --&gt;
+&lt;?php while ($myloop-&gt;have_posts()) : $myloop-&gt;the_post(); ?&gt;
+	&lt;li&gt;
+		&lt;h2&gt;&lt;?php the_title(); ?&gt;&lt;/h2&gt;
+		
+		&lt;p&gt;&lt;?php the_excerpt(); ?&gt;&lt;/p&gt;
+	&lt;/li&gt;
+&lt;?php endwhile;  ?&gt;	
+&lt;!-- // The end of The Loop --&gt;
+&lt;/ul&gt;
+
+</code></pre>					
+				</section>	
+
+				
+				<section>
+					<h3>WP_Query</h3>
+					<h4>If inside the main loop</h4>
+
+					<p>Use <code>wp_reset_postdata();</code></p>
+<pre><code>&lt;!-- // The Query --&gt;
+&lt;?php $myloop = new WP_Query( $args ); ?&gt;
+
+&lt;ul&gt;
+&lt;!-- // Loop starts --&gt;
+&lt;?php while ($myloop-&gt;have_posts()) : $myloop-&gt;the_post(); ?&gt;
+	&lt;li&gt;
+		&lt;h2&gt;&lt;?php the_title(); ?&gt;&lt;/h2&gt;
+		
+		&lt;p&gt;&lt;?php the_content(); ?&gt;&lt;/p&gt;
+	&lt;/li&gt;	
+&lt;!-- // Loop ends --&gt;	
+&lt;?php endwhile;  ?&gt;
+&lt;?php wp_reset_postdata(); // restores the main loop  ?&gt;
+&lt;/ul&gt;
+</code></pre>
+
+				</section>
+				
+				<section>
+					<h3>Tip: Use the Transients API</h3>
+
+<pre><code>&lt;?php 
+// Check for transient. If none, then execute WP_Query
+if ( false === ( $lastpostsloop = get_transient( 'home_lastposts_loop' ) ) ) {
+	
+    $lastpostsloop = new WP_Query( $args ));
+
+	// Put the results in a transient. Expire after 12 hours.
+	set_transient( 'home_lastposts_loop', $lastpostsloop, 12 * HOUR_IN_SECONDS );
+} ?&gt;
+
+&lt;!-- // The Loop --&gt;
+&lt;?php while ($lastpostsloop-&gt;have_posts()) : $lastpostsloop-&gt;the_post(); ?&gt;
+
+&lt;h3&gt;&lt;a href="&lt;?php the_permalink(); ?&gt;"&gt;&lt;?php the_title(); ?&gt;&lt;/a&gt;&lt;/h3&gt;
+
+&lt;!-- // The end of The Loop --&gt;
+&lt;?php endwhile;  ?&gt;	
+
+&lt;?php wp_reset_postdata(); ?&gt;
+</code></pre>
+
+					<p>
+						<br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Transients_API" target="_blank">Transients API</a>
+					</p>
+
+				</section>
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Make a "Recent Posts" featured content box on the home page</h3>
+
+					<ul>
+						<li>Make a Home Page Template</li>
+						<li>Add a div for your latest posts</li>
+						<li>Create a WP_Query loop to show the latest 5 posts</li>
+						<li>Experiment with different parameters (<a href="http://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">here's a link to all of them</a>)</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4><code>functions.php</code></h4>
+					
+					<p>
+						functions.php is a special file that acts like a plugin to add functionality to your theme. 
+					</p>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Functions_File_Explained" target="_blank">Functions File Explained</a></p>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4><code>functions.php</code> in a child theme</h4>
+					
+					<p>
+						<code>functions.php</code> works like <code>style.css</code> in a child theme. It adds to and modifies the parent's <code>functions.php</code>. You don't make a copy of it in your child theme folder like you do with template files, you start a new one.
+					</p>
+
+<pre><code>&lt;?php
+add_action( 'wp_enqueue_scripts', 'theme_enqueue_styles' );
+function theme_enqueue_styles() {
+    wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+    wp_enqueue_style( 'child-style',
+        get_stylesheet_directory_uri() . '/style.css',
+        array('parent-style')
+    );
+}
+
+ (all of your additional functions go here)
+
+</code></pre>	
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4><code>functions.php</code></h4>
+					
+					<p>
+						You can tell your theme to load external files in <code>functions.php</code>. It helps you keep <code>functions.php</code> from being overloaded with too much code.
+					</p>
+					
+<pre>
+<code>
+// Load a file from the inc folder
+require_once 'inc/my-file.php';
+
+</code></pre>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Keeping things organized</h4>
+					
+					<p>
+						It's important to keep theme files organized.
+					
+					<ul>
+						<li><strong>twentythirteen-child</strong> (theme folder)
+							<ul>
+								<li><strong>css</strong> (any theme css you want to keep out of style.css)</li>
+								<li><strong>images</strong> (all the images used in your theme)</li>
+								<li><strong>inc</strong> (includes, I put functionality-related stuff in here)
+									<ul>
+										<li><strong>css</strong> (css used for functionality in the <code>inc</code> folder)</li>
+										<li><strong>images</strong> (images used for functionality in the <code>inc</code> folder)</li>
+										<li><strong>js</strong> (js used for functionality in the <code>inc</code> folder)</li>
+									</ul>
+								</li>
+								<li><strong>js</strong> (theme javascript)</li>
+							</ul>
+						</li>
+					</ul>
+					
+					</p>
+
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Hooks, Action and Filters</h4>
+					
+					<h4><a href="http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters" target="_blank">codex.wordpress.org says:</a></h4>
+					<blockquote>
+						Hooks are provided by WordPress to allow your plugin to 'hook into' the rest of WordPress...There are 2 kinds of hooks: 
+						<ul>
+							<li>Actions: A custom PHP function defined in your plugin (or theme) and hooked, i.e. set to respond, to specific events that take place in WordPress. </li>
+							<li>Filters: Functions that WordPress passes data through, at certain points in execution, just before taking some action with the data </li>
+						</ul>						
+					</blockquote>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Hooks, Action and Filters</h4>
+
+					<p>
+						Hooks, Actions and Filters allow you to change core WordPress functionality without breaking it.
+					</p>
+				</section>	
+				
+				
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Hooks, Action and Filters</h4>
+
+					<p>	
+						<strong>Hooks</strong> - Points at which WordPress allows you to tap into a function and safely modify it.	
+					</p>
+					<p>
+						Some examples are:
+					</p>
+					
+					<ul>
+						<li>Changing the length of the excerpt</li>
+						<li>Adding Widgetized areas</li>
+						<li>Adding Menu areas</li>
+						<li>And hundreds of other things</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Hooks, Action and Filters</h4>
+
+					<p>	
+						<strong>Actions</strong> - A hook that makes something new happen when a WordPress function is triggered.
+					</p>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Hooks, Action and Filters</h4>
+					
+					<p>	
+						<strong>Filters</strong> - A hook that modifies a WordPress function when it is triggered.
+					</p>
+				</section>	
+				
+				
+				<section>
+					<h4>Visual Demo of Hooks, Actions and Filters</h4>
+
+					<iframe width="1280" height="620" src="https://www.youtube.com/embed/E07IPqKmsWA" frameborder="0" allowfullscreen></iframe>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Handy WordPress Functions</h4>
+					
+					<p>
+						The following is an overview of some handy WordPress functions you can hook into to enrich your themes.
+					</p>
+
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/" target="_blank">Entire Function Reference</a></p>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>add_image_size</h4>
+					
+					<p>
+						You can add custom images sizes (in addition to the default thumb, medium, large and original).
+					</p>
+<pre>
+<code>				
+add_image_size( 'my-img', 400, 400 ); // soft proportional crop mode
+add_image_size( 'other-img', 200, 269, true ); // hard crop mode
+add_image_size( 'custom-size', 220, 220, array( 'left', 'top' ) ); // Hard crop left top
+
+</code></pre>
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/add_image_size" target="_blank">add image size</a></p>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>get_the_post_thumbnail</h4>
+					
+					<p>
+						In your queries you can use <code>get_the_post_thumbnail</code> to load custom sizes of featured images.
+					</p>
+<pre>
+<code>				
+&lt;?php echo get_the_post_thumbnail($page->ID, 'my-img'); ?&gt;
+
+</code></pre>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>Tip: Regenerate Thumbnails</h4>
+					
+					<p>
+						Adding custom thumbnail sizes to functions.php will not affect images previously uploaded, only images uploaded from that point on. You will need to regenerate older images.
+					</p>
+					
+					<p>
+						You can use the handy <a href="https://wordpress.org/plugins/force-regenerate-thumbnails/" target="_blank"><strong>Force Regenerate Thumbnails</strong></a> plugin to create the custom sizes of your previously uploaded images.
+					</p>
+				</section>				
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Add a custom thumbnail to your theme!</h3>
+
+					<ul>
+						<li>Register a custom thumbnail size</li>
+						<li>Use your custom thumbnail size in your recent post loop on your home page.</li>
+					</ul>
+				</section>	
+
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>register_nav_menus</h4>
+					
+					<p> 
+						If you have used custom menus in WordPress sites before (Appearance > Menus in the admin) you know a theme can have specific menu locations.
+					</p>
+					<p>
+						<img src="images/menus.png" />
+					</p>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/register_nav_menus" target="_blank">register nav menus</a></p>
+				</section>	
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>register_nav_menus</h4>
+					
+					<p> 
+						Use <code>register_nav_menus</code> in functions.php to register your menus.
+					</p>
+<pre>
+<code>	
+register_nav_menus( array(
+	'footer-nav' => 'Footer Menu',
+) );
+
+</code></pre>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>wp_nav_menu</h4>
+					
+					<p> 
+						Use the <code>wp_nav_menu</code> tag to assign a menu to a location in your theme.
+					</p> 
+<pre>
+<code>	
+&lt;?php wp_nav_menu( array( 'theme_location' => 'footer-nav' ) ); ?&gt;
+
+</code></pre>
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/wp_nav_menu" target="_blank">wp nav menu</a></p>
+				</section>			
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>wp_nav_menu</h4>
+					
+					<p> 
+						Add fallback_cb to make sure no menu displays if there are no custom menus assigned to that location.
+					</p> 
+<pre>
+<code>	
+&lt;?php wp_nav_menu( array( 'theme_location' => 'footer-nav', 'fallback_cb' => false ) ); ?&gt;
+
+</code></pre>
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/wp_nav_menu" target="_blank">wp nav menu</a></p>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>wp_nav_menu</h4>
+					
+					<p> 
+						You can also use <code>wp_nav_menu</code> to load any custom menu you've created in Appearance > Menus. You can use the menu's ID, slug, or name.
+					</p> 
+<pre>
+<code>	
+&lt;?php wp_nav_menu( array('menu' => '2' )); ?&gt;
+
+</code></pre>
+				</section>					
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Register a Nav Menu</h3>
+
+					<ul>
+						<li>Register a nav menu (suggestion: footer-nav)</li>
+						<li>Add the wp_nav_menu tag to load that menu in the footer</li>
+						<li>Create a new menu in Appearance > Menus and assign it to that Theme location</li>
+					</ul>
+				</section>	
+				
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>register_sidebar</h4>
+					
+					<p>
+						Most themes come with specific widgetized areas -- locations in the sidebar, footer, header, etc. that you can drag and drop widgets into. You can use <code>register_sidebar</code> to create widgetized areas in your theme.
+					</p>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/register_sidebar" target="_blank">register sidebar</a></p>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>register_sidebar</h4>
+					
+					<p> 
+						Use <code>register_sidebar</code> to register your widgetized areas.
+					</p> 
+<pre>
+<code>	
+register_sidebar(array(
+	'name' => __( 'Header Widget Area' ),
+	'id' => 'headerwidget',
+	'description' => __( 'The header widget area.' ),
+	'before_widget' => '&lt;div id="%1$s" class="headerwidget %2$s"&gt;',
+	'after_widget' =&gt; '&lt;/div&gt;',
+	'before_title' =&gt; '&lt;h4 class="headerwidgettitle"&gt;',
+	'after_title' =&gt; '&lt;/h4&gt;',
+));
+
+</code></pre>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>dynamic_sidebar</h4>
+					
+					<p> 
+						Use the <code>dynamic_sidebar</code> tag to assign a widgetized area to a location in your theme.
+					</p> 
+<pre>
+<code>	
+&lt;?php dynamic_sidebar( 'headerwidget' ); ?&gt;
+
+</code></pre>
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Function_Reference/dynamic_sidebar" target="_blank">dynamic sidebar</a></p>
+				</section>		
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>dynamic_sidebar with conditional tags</h4>
+					
+					<p> 
+						Use the <code>dynamic_sidebar</code> tag along with conditional tags to load certain widget areas on certain pages.
+					</p> 
+<pre>
+<code>
+if(is_page( 'about' )){
+	dynamic_sidebar( 'aboutsidebar' );
+}
+
+if(is_page( 'contact' )){
+	dynamic_sidebar( 'contactsidebar' );
+}
+	
+</code></pre>
+					<p>View <a href="https://github.com/TheTracyL/GDI-Code-Samples/blob/master/sidebar.php" target="_blank">the code to make this work for Twentythirteen</a></p>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Add some sidebars to your theme!</h3>
+
+					<p>
+						Try to use any of the functions we learned today.
+						<ul>
+							<li>Register a sidebar - try making one in the header</li>
+							<li>Add the dynamic_sidebar tag to the header to display the sidebar</li>
+							<li>Try adding widgets to it and see what happens</li>
+						</ul>
+					</p>
+					<p><br />Try to do it yourself (if you're stuck <a href="https://github.com/TheTracyL/GDI-Code-Samples/blob/master/functions.php" target="_blank">view functions.php on Github</a>).</p>
+				</section>	
+				
+				
+				<section>
+					<h2>Adding functionality</h2>
+						
+					<h4>WP_Widget</h4>
+					
+					<p>
+						Not only can you create widgetized areas, you can create widgets to drag and drop into those areas.
+					</p>
+					
+					<p><br />Check out the WordPress Codex <a href="http://codex.wordpress.org/Widgets_API" target="_blank">Widgets API</a></p>
+				</section>	
+				
+				<section>
+					<h2>Creating Widgets</h2>
+						
+					<h4>WP_Widget</h4>
+					
+					<p>
+						Note: You should put the widget code in its own file. If your widget is breaking the site you can easily turn it "on" and "off" while you troubleshoot code. Add a line of code to <code>functions.php</code> to load the file.
+					</p>
+					
+					<p>"On"</p>
+<pre>
+<code>/* load my widget */
+require_once 'inc/my-widget.php';
+</code></pre>
+
+"Off"
+<pre>
+<code>/* load my widget */
+//require_once 'inc/my-widget.php';</code></pre>
+				</section>		
+
+				<section>
+					<h2>Creating Widgets</h2>
+						
+					<h4>Example Widget: My Awesome Widget</h4>
+					<p>
+						We'll go through all the code for My Awesome Widget
+					</p>
+					
+					<p><br /><a href="https://github.com/TheTracyL/GDI-Widget-Example/blob/master/my-widget.php" target="_blank">View the code on Github</a></p>
+				</section>	
+				
+				<section>
+					<h2>Exercise time!</h2>
+					<h3>Make a widget</h3>
+
+					<p>
+						We'll be here to help.
+					</p>
+					
+					<p><br /><a href="https://github.com/TheTracyL/GDI-Widget-Example/blob/master/my-widget.php" target="_blank">View the code on Github</a></p>
+				</section>
+				
+				<section>
+					<h2>Resources</h2>
+
+					<ul>
+						<li><strong><a href="http://www.lynda.com/articles/build-wordpress-themes-scratch-lynda-com">BuildWordPress Themes from Scratch with lynda.com</a></strong> By Morten Rand-Hendriksen</li>
+						<li><strong><a href="http://code.tutsplus.com/series/making-the-perfect-wordpress-theme--wp-33987">Making the Perfect WordPress Theme</a></strong></li>
+						<li><strong><a href="http://wp-snippets.com/" target="_blank">WP Snippets</a></strong> - WordPress Code Snippets</li>
+						<li><strong><a href="http://wpmu.org/create-a-wordpress-widget/" target="_blank">How to Create a WordPress Widget</a></strong> - 4 Killer Tutorials You Should Read</li>
+						<li><strong><a href="https://pippinsplugins.com/learn/">Pippin's Plugins</a></strong> - Learn Plugin Development</li>
+					</ul>
+				</section>	
+				
+				<section>
+					<h1>Questions?</h1>
+				</section>
+
+
+			</div>
+      <footer>
+        <div class="copyright">
+          Building Themes for WordPress - Adapted from <a href="https://github.com/TheTracyL/GDI-WordPress-101" target="_blank">GDI Philly</a>
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a>
+        </div>
+      </footer>
+    </div>
+
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/accessibility-helper/js/accessibility-helper.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+<style>
+  .pull-left: {
+    float: left;
+    clear: both;
+    width: 50%;
+  }
+  .pull-right: {
+    float: right;
+    clear: both;
+    width: 50%;
+  }
+</style>
+  </body>
+</html>
